@@ -1,70 +1,164 @@
-# Getting Started with Create React App
+<p align="center">
+  <a href="" rel="noopener">
+ <img width=400px height=200px src="crud_logo.png" alt="Project logo"></a>
+</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h3 align="center">A CRUD with Express and MongoDB</h3>
 
-## Available Scripts
+<div align="center">
 
-In the project directory, you can run:
+[![Status](https://img.shields.io/badge/status-active-success.svg)]()
 
-### `yarn start`
+</div>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📝 Table of Contents
 
-### `yarn test`
+- [About](#about)
+- [Getting Started](#getting_started)
+- [Structures](#structures)
+- [Built Using](#built_using)
+- [Authors](#authors)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🧐 About <a name = "about"></a>
 
-### `yarn build`
+This project it's about developing skills in MongoDB and NodeJS, creating a CRUD in the backend using ExpressJS as a framework.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🏁 Getting Started <a name = "getting_started"></a>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Prerequisites & Installing
 
-### `yarn eject`
+What packages do you need to install the software.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+-NodeJS    
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.0",
+    "express": "^4.18.1",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.6.1",
+    "path": "^0.12.7"
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Runing & Usage
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+A step by step series of examples that tell you how to get a development env running.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Running the project with the command line
 
-## Learn More
+```
+node src/index.js
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+There are 5 different requests to test the CRUD and two others, to Register a user and to authenticate that user.
+For all requests, you will need to save the token (generated when a user is created) as Bearer Token authorization type (wich you get in the response of the Authenticate request).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### POST Register
+This is a request to register a user. Expect a JSON in the format below with the URL http://localhost:3000/auth/register 
+```
+{
+  "name": "User name",
+  "email": "User email",
+  "password": "User password"
+}
+```
+#### POST Authenticate
+This is a request to Authenticate a user. Expect a JSON in the format below with the URL http://localhost:3000/auth/authenticate
+```
+{
+  "email": "User email",
+  "password": "User password"
+}
+```
 
-### Code Splitting
+#### GET List
+This is a request that returns all registered projects. Don't need to pass params through a JSON, just run the request with the URL: http://localhost:3000/projects
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### GET Show
+This is a request that returns an specific project. Don't need to pass params through a JSON, just run the request with the URL: http://localhost:3000/projects/+projectId
 
-### Analyzing the Bundle Size
+Example
+```
+http://localhost:3000/projects/633216f1c7c06fdbfe9dd64c
+```
+#### POST Create
+This is a request to create a project. Expect a JSON in the format below with the URL http://localhost:3000/projects
+```
+{
+  "title": "Project title",
+  "description": "description of the project",
+  "tasks": [
+    {
+    "title": "task title",
+    "assignedTo": "userId"
+    },...
+  ]
+}
+```
+#### PUT Update
+This is a request that returns an updated project. Expect a JSON in the format below with the URL: http://localhost:3000/projects/+projectId
+```
+URL Example http://localhost:3000/projects/633339a0cf3abd4ffb85c44f
+JSON expected.
+{
+  "title": "new title for the project",
+    "description": "new description for the project",
+    "tasks": [
+        {
+            "title": "new task for the project",
+            "assignedTo": "633215507f7f18e05f5ba8e0"
+        }
+    ]
+}
+```
+#### DEL Delete
+This is a request that delete an specific project. Don't need to pass params through a JSON, just run the request with the URL passing the project's Id: http://localhost:3000/projects/+projectId
+```
+http://localhost:3000/projects/633216f1c7c06fdbfe9dd64c
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
+## 📁 Structures <a name="structures"></a>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### This is how the Project is structured.
 
-### Advanced Configuration
+```
+app/
+├─ node_modules/
+├─ src/
+│  └─ app/
+│     └─ controllers/
+│       └─ authController.js
+│       └─ index.js
+│       └─ projectController.js
+│     └─ middlewares/
+│       └─ auth.js
+│     └─ models/
+│       └─ project.js
+│       └─ task.js
+│       └─ user.js
+│  └─ config/
+│     └─ auth.json
+│  └─ database/
+│     └─ index.js
+│  └─ index.js
+├─ .gitignore
+├─ package.json
+├─ README.md
+└─ yarn.lock
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## ⛏️ Built Using <a name = "built_using"></a>
 
-### Deployment
+- [MongoDB](https://www.mongodb.com/) - MongoDB
+- [NodeJS](https://nodejs.org/en/) - NodeJS
+- [ExpressJS](https://expressjs.com/) - ExpressJS
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `yarn build` fails to minify
+## ✍️ Authors <a name = "authors"></a>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [@joaorjoaquim](https://github.com/joaorjoaquim) - Idea & Initial work
