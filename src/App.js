@@ -1,7 +1,7 @@
 import GlobalStyle from './styles/global';
 import { Container, Content } from './styles';
 import Upload from './components/Upload';
-import FileList from './components/Upload/FileList';
+import FileList from './components/FileList';
 
 function App() {
     return (
