@@ -12,7 +12,7 @@ export default createGlobalStyle`
     body {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 14px;
-        background: #7159c1;
+        background: radial-gradient(circle, rgba(68,62,172,1) 0%, rgba(129,129,215,1) 0%, rgba(68,77,167,1) 100%);
         text-rendering: optimizeLegibility;
         -webkit-font-smoothing: antialiased;
     }
