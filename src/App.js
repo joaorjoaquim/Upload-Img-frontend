@@ -11,7 +11,11 @@ function App() {
     const [uploadedFiles, setUploadedFiles] = useState([]);
     /*
     useEffect(() => {
-        const response = api.get('posts');
+        const fetchData = async () => {
+    const response = await api.get('posts');
+  }
+  fetchData()
+
         setUploadedFiles({
             uploadedFiles: response.data.map((file) => ({
                 id: file._id,
@@ -22,7 +26,7 @@ function App() {
                 url: file.url,
             })),
         });
-    });
+    } []);
     */
 
     const handleUpload = (files) => {
