@@ -31,6 +31,7 @@ class Otherapp extends Component {
     }
 
     handleUpload = (files) => {
+        console.log(files);
         const uploadedFiles = files.map((file) => ({
             file,
             id: uniqueId(),
@@ -42,11 +43,11 @@ class Otherapp extends Component {
             error: false,
             url: null,
         }));
-
+        console.log(uploadedFiles);
         this.setState({
             uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles),
         });
-
+        console.log(this.state.uploadedFiles);
         uploadedFiles.forEach(this.processUpload);
     };
 
