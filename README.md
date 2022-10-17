@@ -1,9 +1,9 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=400px height=200px src="crud_logo.png" alt="Project logo"></a>
+ <img width=200px height=200px src="./public/logo512.png" alt="Project logo"></a>
 </p>
 
-<h3 align="center">A CRUD with Express and MongoDB</h3>
+<h2 align="center">A fronted for an image upload system</h2>
 
 <div align="center">
 
@@ -15,15 +15,45 @@
 
 ## 📝 Table of Contents
 
-- [About](#about)
-- [Getting Started](#getting_started)
-- [Structures](#structures)
-- [Built Using](#built_using)
-- [Authors](#authors)
+-   [About](#about)
+-   [Structures](#structures)
+-   [Getting Started](#getting_started)
+-   [Built Using](#built_using)
+-   [Authors](#authors)
 
 ## 🧐 About <a name = "about"></a>
 
-This project it's about developing skills in MongoDB and NodeJS, creating a CRUD in the backend using ExpressJS as a framework.
+This project it's about developing skills in MongoDB and NodeJS, creating a image upload system in the frontend using ReactJS as a framework.
+
+## 📁 Structures <a name="structures"></a>
+
+### This is how the Project is structured.
+
+```
+app/
+├─ node_modules/
+├─ public/
+├─ src/
+│  └─ components/
+│     └─ FileList/
+│        └─ index.js
+│        └─ styles.js
+│     └─ Upload/
+│        └─ index.js
+│        └─ styles.js
+│  └─ services/
+│     └─ api.js
+│  └─ styles/
+│     └─ global.js
+│  └─ App.js
+│  └─ index.js
+│  └─ styles.js
+├─ .gitignore
+├─ .prettierrc
+├─ package.json
+├─ README.md
+└─ yarn.lock
+```
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
@@ -34,14 +64,13 @@ These instructions will get you a copy of the project up and running on your loc
 What packages do you need to install the software.
 
 ```
--NodeJS    
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.20.0",
-    "express": "^4.18.1",
-    "fs": "^0.0.1-security",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.6.1",
-    "path": "^0.12.7"
+-NodeJS
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.6.5",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1"
 ```
 
 ### Runing & Usage
@@ -54,111 +83,36 @@ Running the project with the command line
 node src/index.js
 ```
 
-There are 5 different requests to test the CRUD and two others, to Register a user and to authenticate that user.
-For all requests, you will need to save the token (generated when a user is created) as Bearer Token authorization type (wich you get in the response of the Authenticate request).
+There are 3 different requests to test this backend.
 
-#### POST Register
-This is a request to register a user. Expect a JSON in the format below with the URL http://localhost:3000/auth/register 
+#### POST Posts
+
+This is a request to register a user. Expect a form-data with a key file and a image as value in the format below with the URL: http://localhost:3000/posts
+
 ```
 {
-  "name": "User name",
-  "email": "User email",
-  "password": "User password"
-}
-```
-#### POST Authenticate
-This is a request to Authenticate a user. Expect a JSON in the format below with the URL http://localhost:3000/auth/authenticate
-```
-{
-  "email": "User email",
-  "password": "User password"
+  file: image file
 }
 ```
 
 #### GET List
-This is a request that returns all registered projects. Don't need to pass params through a JSON, just run the request with the URL: http://localhost:3000/projects
 
-#### GET Show
-This is a request that returns an specific project. Don't need to pass params through a JSON, just run the request with the URL: http://localhost:3000/projects/+projectId
+This is a request that returns all registered projects. Don't need to pass params through a JSON, just run the request with the URL: http://localhost:3000/posts
 
-Example
-```
-http://localhost:3000/projects/633216f1c7c06fdbfe9dd64c
-```
-#### POST Create
-This is a request to create a project. Expect a JSON in the format below with the URL http://localhost:3000/projects
-```
-{
-  "title": "Project title",
-  "description": "description of the project",
-  "tasks": [
-    {
-    "title": "task title",
-    "assignedTo": "userId"
-    },...
-  ]
-}
-```
-#### PUT Update
-This is a request that returns an updated project. Expect a JSON in the format below with the URL: http://localhost:3000/projects/+projectId
-```
-URL Example http://localhost:3000/projects/633339a0cf3abd4ffb85c44f
-JSON expected.
-{
-  "title": "new title for the project",
-    "description": "new description for the project",
-    "tasks": [
-        {
-            "title": "new task for the project",
-            "assignedTo": "633215507f7f18e05f5ba8e0"
-        }
-    ]
-}
-```
 #### DEL Delete
-This is a request that delete an specific project. Don't need to pass params through a JSON, just run the request with the URL passing the project's Id: http://localhost:3000/projects/+projectId
-```
-http://localhost:3000/projects/633216f1c7c06fdbfe9dd64c
-```
 
-
-## 📁 Structures <a name="structures"></a>
-
-### This is how the Project is structured.
+This is a request that delete an specific project. Don't need to pass params through a JSON, just run the request with the URL passing the project's Id: http://localhost:3000/posts/+imageId
 
 ```
-app/
-├─ node_modules/
-├─ src/
-│  └─ app/
-│     └─ controllers/
-│       └─ authController.js
-│       └─ index.js
-│       └─ projectController.js
-│     └─ middlewares/
-│       └─ auth.js
-│     └─ models/
-│       └─ project.js
-│       └─ task.js
-│       └─ user.js
-│  └─ config/
-│     └─ auth.json
-│  └─ database/
-│     └─ index.js
-│  └─ index.js
-├─ .gitignore
-├─ package.json
-├─ README.md
-└─ yarn.lock
+http://localhost:3000/posts/633216f1c7c06fdbfe9dd64c
 ```
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
-- [MongoDB](https://www.mongodb.com/) - MongoDB
-- [NodeJS](https://nodejs.org/en/) - NodeJS
-- [ExpressJS](https://expressjs.com/) - ExpressJS
-
+-   [MongoDB](https://www.mongodb.com/) - MongoDB
+-   [NodeJS](https://nodejs.org/en/) - NodeJS
+-   [ExpressJS](https://expressjs.com/) - ExpressJS
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@joaorjoaquim](https://github.com/joaorjoaquim) - Idea & Initial work
+-   [@joaorjoaquim](https://github.com/joaorjoaquim) - Idea & Initial work
