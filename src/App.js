@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { uniqueId } from 'lodash';
 import { filesize } from 'filesize';
 import GlobalStyle from './styles/global';
@@ -7,12 +7,26 @@ import Upload from './components/Upload';
 import FileList from './components/FileList';
 import api from './services/api';
 
-class App extends Component {
-    state = {
-        uploadedFiles: [],
-    };
-    handleUpload = (files) => {
-        const uploadedFiles = files.map((file) => ({
+function App() {
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+    /*
+    useEffect(() => {
+        const response = api.get('posts');
+        setUploadedFiles({
+            uploadedFiles: response.data.map((file) => ({
+                id: file._id,
+                name: file.name,
+                readableSize: filesize(file.size),
+                preview: file.url,
+                uploaded: true,
+                url: file.url,
+            })),
+        });
+    });
+    */
+
+    const handleUpload = (files) => {
+        const uploadedFilesAux = files.map((file) => ({
             file,
             id: uniqueId(),
             name: file.name,
@@ -24,23 +38,25 @@ class App extends Component {
             url: null,
         }));
 
-        this.setState({
-            uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles),
-        });
-        uploadedFiles.forEach(this.processUpload);
+        setUploadedFiles((uploadedFiles) => [
+            ...uploadedFiles,
+            uploadedFilesAux,
+        ]);
+        uploadedFilesAux.forEach(processUpload);
     };
 
-    updateFile = (id, data) => {
-        this.setState({
-            uploadedFiles: this.state.uploadedFiles.map((uploadedFile) => {
+    //imagino que o erro ta nessa função, q é a responsavel por pegar meus files e exibir, nesse caso ali era
+    const updateFile = (id, data) => {
+        setUploadedFiles(
+            uploadedFiles.map((uploadedFile) => {
                 return id === uploadedFile.id
                     ? { ...uploadedFile, ...data }
                     : uploadedFile;
-            }),
-        });
+            })
+        );
     };
 
-    processUpload = (uploadedFile) => {
+    const processUpload = (uploadedFile) => {
         const data = new FormData();
 
         data.append('file', uploadedFile.file, uploadedFile.name);
@@ -51,27 +67,41 @@ class App extends Component {
                     Math.round((e.loaded * 100) / e.total)
                 );
 
-                this.updateFile(uploadedFile.id, {
+                updateFile(uploadedFile.id, {
                     progress,
                 });
             },
-        });
+        })
+            .then((response) => {
+                updateFile(uploadedFile.id, {
+                    uploaded: true,
+                    id: response.data._id,
+                    url: response.data.url,
+                });
+            })
+            .catch(() => {
+                updateFile(uploadedFile.id, {
+                    error: true,
+                });
+            });
     };
 
-    render() {
-        const { uploadedFiles } = this.state;
+    const handleDelete = async (id) => {
+        await api.delete(`posts/${id}`);
 
-        return (
-            <Container>
-                <Content>
-                    <Upload onUpload={this.handleUpload} />
-                    {!!uploadedFiles.length && (
-                        <FileList files={uploadedFiles} />
-                    )}
-                </Content>
-                <GlobalStyle />
-            </Container>
-        );
-    }
+        setUploadedFiles(uploadedFiles.filter((file) => file.id !== id));
+    };
+
+    return (
+        <Container>
+            <Content>
+                <Upload onUpload={handleUpload} />
+                {!!uploadedFiles.length && (
+                    <FileList files={uploadedFiles} onDelete={handleDelete} />
+                )}
+            </Content>
+            <GlobalStyle />
+        </Container>
+    );
 }
 export default App;
