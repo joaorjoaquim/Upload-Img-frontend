@@ -37,7 +37,7 @@ const FileList = ({ files, onDelete }) => (
 
                     {uploadedFile.url && (
                         <a
-                            href="https://st.depositphotos.com/1010338/2099/i/450/depositphotos_20999947-stock-photo-tropical-island-with-palms.jpg"
+                            href={uploadedFile.url}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
