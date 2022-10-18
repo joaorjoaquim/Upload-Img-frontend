@@ -8,7 +8,9 @@ const FileList = ({ files, onDelete }) => (
         {files.map((uploadedFile) => (
             <li key={uploadedFile.id}>
                 <FileInfo>
-                    <Preview src={uploadedFile.preview} />
+                    <Preview
+                        src={uploadedFile.preview.replaceAll(' ', '%20')}
+                    />
                     <div>
                         <strong>{uploadedFile.name}</strong>
                         <span>
