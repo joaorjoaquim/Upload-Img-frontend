@@ -25,6 +25,15 @@
 
 This project it's about developing skills in MongoDB and NodeJS, creating a image upload system in the frontend using ReactJS as a framework.
 
+## 🖥️ Frontend Preview <a name="printscreen"></a>
+
+This is a PrintScreen of the project running in Google Chrome.
+
+<p align="center">
+<a href="" rel="noopener">
+<img width=600px height=400px src="./public/printscreen.png" alt="Frontend PrintScreen"></a>
+</p>
+
 ## 📁 Structures <a name="structures"></a>
 
 ### This is how the Project is structured.
