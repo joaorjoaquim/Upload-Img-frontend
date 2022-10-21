@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { Component } from 'react';
 import { uniqueId } from 'lodash';
 import { filesize } from 'filesize';
-import GlobalStyle from './styles/global';
-import { Container, Content } from './styles';
-import Upload from './components/Upload';
-import FileList from './components/FileList';
+
 import api from './services/api';
 
-function App() {
-    const [uploadedFiles, setUploadedFiles] = useState([]);
-    /*
-    useEffect(() => {
-        const fetchData = async () => {
-    const response = await api.get('posts');
-  }
-  fetchData()
+import GlobalStyle from './styles/global';
+import { Container, Content } from './styles';
 
-        setUploadedFiles({
+import Upload from './components/Upload';
+import FileList from './components/FileList';
+
+class App extends Component {
+    state = {
+        uploadedFiles: [],
+    };
+
+    async componentDidMount() {
+        const response = await api.get('posts');
+
+        this.setState({
             uploadedFiles: response.data.map((file) => ({
                 id: file._id,
                 name: file.name,
@@ -26,11 +28,11 @@ function App() {
                 url: file.url,
             })),
         });
-    } []);
-    */
+    }
 
-    const handleUpload = (files) => {
-        const uploadedFilesAux = files.map((file) => ({
+    handleUpload = (files) => {
+        console.log(files);
+        const uploadedFiles = files.map((file) => ({
             file,
             id: uniqueId(),
             name: file.name,
@@ -41,26 +43,25 @@ function App() {
             error: false,
             url: null,
         }));
-
-        setUploadedFiles((uploadedFiles) => [
-            ...uploadedFiles,
-            uploadedFilesAux,
-        ]);
-        uploadedFilesAux.forEach(processUpload);
+        console.log(uploadedFiles);
+        this.setState({
+            uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles),
+        });
+        console.log(this.state.uploadedFiles);
+        uploadedFiles.forEach(this.processUpload);
     };
 
-    //imagino que o erro ta nessa função, q é a responsavel por pegar meus files e exibir, nesse caso ali era
-    const updateFile = (id, data) => {
-        setUploadedFiles(
-            uploadedFiles.map((uploadedFile) => {
+    updateFile = (id, data) => {
+        this.setState({
+            uploadedFiles: this.state.uploadedFiles.map((uploadedFile) => {
                 return id === uploadedFile.id
                     ? { ...uploadedFile, ...data }
                     : uploadedFile;
-            })
-        );
+            }),
+        });
     };
 
-    const processUpload = (uploadedFile) => {
+    processUpload = (uploadedFile) => {
         const data = new FormData();
 
         data.append('file', uploadedFile.file, uploadedFile.name);
@@ -71,41 +72,59 @@ function App() {
                     Math.round((e.loaded * 100) / e.total)
                 );
 
-                updateFile(uploadedFile.id, {
+                this.updateFile(uploadedFile.id, {
                     progress,
                 });
             },
         })
             .then((response) => {
-                updateFile(uploadedFile.id, {
+                this.updateFile(uploadedFile.id, {
                     uploaded: true,
                     id: response.data._id,
                     url: response.data.url,
                 });
             })
             .catch(() => {
-                updateFile(uploadedFile.id, {
+                this.updateFile(uploadedFile.id, {
                     error: true,
                 });
             });
     };
 
-    const handleDelete = async (id) => {
+    handleDelete = async (id) => {
         await api.delete(`posts/${id}`);
 
-        setUploadedFiles(uploadedFiles.filter((file) => file.id !== id));
+        this.setState({
+            uploadedFiles: this.state.uploadedFiles.filter(
+                (file) => file.id !== id
+            ),
+        });
     };
 
-    return (
-        <Container>
-            <Content>
-                <Upload onUpload={handleUpload} />
-                {!!uploadedFiles.length && (
-                    <FileList files={uploadedFiles} onDelete={handleDelete} />
-                )}
-            </Content>
-            <GlobalStyle />
-        </Container>
-    );
+    componentWillUnmount() {
+        this.state.uploadedFiles.forEach((file) =>
+            URL.revokeObjectURL(file.preview)
+        );
+    }
+
+    render() {
+        const { uploadedFiles } = this.state;
+
+        return (
+            <Container>
+                <Content>
+                    <Upload onUpload={this.handleUpload} />
+                    {!!uploadedFiles.length && (
+                        <FileList
+                            files={uploadedFiles}
+                            onDelete={this.handleDelete}
+                        />
+                    )}
+                </Content>
+                <GlobalStyle />
+            </Container>
+        );
+    }
 }
+
 export default App;
